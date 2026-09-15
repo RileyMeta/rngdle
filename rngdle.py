@@ -45,7 +45,7 @@ class RNGdle:
         while True:
             user_guess = self.accept_input()
 
-            if user_guess == self.number:
+            if user_guess == str(self.number):
                 self.guesses.append([])
                 print(f"{Colors.GREEN}Correct! The number was {self.number}.{Colors.RESET}")
                 break
@@ -85,14 +85,19 @@ class RNGdle:
                 if not user_input:
                     continue
 
+                if len(user_input) != 5:
+                    print("Your guess must be exactly 5 digits. Please try again.")
+                    continue
+
                 if not user_input.isdigit():
                     print("Your guess must be a number. Please try again.")
                     continue
 
-                user_num: int = int(user_input)
+                user_guess_str: str = str(user_input)
+                user_num      : int = int(user_guess_str)
 
-                if not min_num < user_num < max_num:
-                    print(f"Your guess must be between {min_num} and {max_num}")
+                if not 0 <= user_num <= 99999:
+                    print(f"Your guess must be between 00000 and 99999. Please try again.")
                     continue
 
                 break
@@ -101,7 +106,7 @@ class RNGdle:
                 print()
                 sys.exit(0)
 
-        return user_num
+        return user_guess_str
 
     def show_result(self, output):
         self.guesses.append(output)
