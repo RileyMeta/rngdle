@@ -10,7 +10,7 @@ Guess a random number with wordle-style hints.
 
 Author: Riley Ava
 Created: 12/09/2026
-Last Modified: 13/09/2026
+Last Modified: 15/09/2026
 Version: 1.0.0
 License: MPL 2.0
 Repository: https://github.com/RileyMeta/rngdle
@@ -36,24 +36,25 @@ class Colors:
 
 class RNGdle:
     def __init__(self):
-        self.num_range : tuple = (10_000, 100_000)
-        self.number    : int   = randrange(self.num_range[0], self.num_range[1])
-        self.layout    : list  = [char for char in str(self.number)]
-        self.fail_limit: int   = 5
-        self.guesses   : list  = []
+        self.num_range : int  = (10_000, 100_000)
+        self.number    : int  = randrange(self.num_range[0], self.num_range[1])
+        self.layout    : list = list(str(self.number))
+        self.fail_limit: int  = 5
+        self.guesses   : list = []
 
-        while self.fail_limit >= 0:
+        while True:
             user_guess = self.accept_input()
 
             if user_guess == self.number:
                 self.guesses.append([])
+                print(f"{Colors.GREEN}Correct! The number was {self.number}.{Colors.RESET}")
                 break
 
-            user_layout: list = [char for char in str(user_guess)]
-            num_freq = Counter(self.layout)
-            self.fail_limit -= 1
+            user_layout: list    = list(str(user_guess))
+            num_freq   : Counter = Counter(self.layout)
+            self.fail_limit     -= 1
 
-            output     : list = []
+            output: list = []
             for idx, char in enumerate(user_layout):
                 if char == self.layout[idx]:
                     output.append((Colors.GREEN, char))
@@ -65,6 +66,10 @@ class RNGdle:
 
             self.show_result(output)
 
+            if self.fail_limit < 0:
+                print(f"{Colors.RED}Game Over. The number was {self.number}.{Colors.RESET}")
+                break
+
         self.print_final_results()
 
     def accept_input(self) -> int:
@@ -73,8 +78,8 @@ class RNGdle:
 
         while True:
             try:
-                limit: int = self.fail_limit
-                prompt = f"[Remaining: {limit}] Your Guess: " if limit > 0 else "Final Guess: "
+                limit     : int = self.fail_limit
+                prompt    : str = f"[Remaining: {limit}] Your Guess: " if limit > 0 else "Final Guess: "
                 user_input: str = input(prompt)
 
                 if not user_input:
@@ -98,20 +103,22 @@ class RNGdle:
 
         return user_num
 
-    def show_result(self, user_input):
-        self.guesses.append(user_input)
+    def show_result(self, output):
+        self.guesses.append(output)
 
-        for idx, (color, num) in enumerate(user_input):
+        for idx, (color, num) in enumerate(output):
             print(f"[{color}{num}{Colors.RESET}]", end=" | " if idx < 4 else "\n")
 
     def print_final_results(self):
-        for guess in self.guesses:
-            if guess == []:
-                for idx, num in enumerate(self.layout):
-                    print(f"{Colors.GREEN}▆{Colors.RESET}", end=f"{" " if idx < 4 else "\n"}")
-            for idx, (color, num) in enumerate(guess):
-                print(f"{color}▆{Colors.RESET}", end=f"{" " if idx < 4 else "\n"}")
-
+        if self.number in self.guesses:
+            for idx, num in enumerate(str(self.number)):
+                print(f"{Colors.GREEN}▆{Colors.RESET}", end=f"{" " if idx < 4 else "\n"}")
+        else:
+            for guess in self.guesses:
+                if not guess:
+                    print(f"{Colors.GREEN}▆ ▆ ▆ ▆ ▆{Colors.RESET}")
+                for idx, (color, num) in enumerate(guess):
+                    print(f"{color}▆{Colors.RESET}", end=f"{" " if idx < 4 else "\n"}")
 
 if __name__ == "__main__":
     RNGdle()
