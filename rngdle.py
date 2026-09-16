@@ -66,6 +66,7 @@ class RNGdle:
             for idx, char in enumerate(user_layout):
                 if char == self.layout[idx]:
                     output.append((Colors.GREEN, char))
+                    num_freq[char] -= 1
                 elif char in num_freq and num_freq[char] > 0:
                     output.append((Colors.YELLOW, char))
                     num_freq[char] -= 1
