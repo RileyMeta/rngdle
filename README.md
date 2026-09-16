@@ -2,4 +2,4 @@
 An wordle-style RNG game
 
 ## Example
-<img width="319" height="268" alt="image" src="https://github.com/user-attachments/assets/27725f38-e2b3-4d14-955b-b629ae2d0ef7" />
+<img width="326" height="293" alt="image" src="https://github.com/user-attachments/assets/bfb8e9ab-009b-42c7-ade6-3b48da7cfaf5" />
