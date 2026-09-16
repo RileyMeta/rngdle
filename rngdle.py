@@ -19,7 +19,7 @@ Requirements:
     - Python 3.10 (or newer)
 
 Usage:
-    rngdle...
+    rngdle [OPTION]...
 
 Copyright (c) 2026 Riley Ava
 """
@@ -37,6 +37,12 @@ class Colors:
 
 class RNGdle:
     def __init__(self, num_range: tuple = None, limit: int = None):
+        """Initialize a new instance of the RNGdle class
+
+        Params:
+            num_range (tuple): [Default: (0, 100_000)] The range of numbers to generate
+            limit       (int): [Default: 5] The number of tries per-game
+        """
         self.num_range : tuple  = num_range
         self.fail_limit: int    = limit
         random_number  : int    = randrange(self.num_range[0], self.num_range[1])
@@ -87,7 +93,12 @@ class RNGdle:
         padding: int = limit - len(string)
         return str(char) * padding + string
 
-    def accept_input(self) -> int:
+    def accept_input(self) -> str:
+        """Accept user input and validate it fits within bounds
+
+        Returns:
+            str: The cleaned user input
+        """
         min_num: int = self.num_range[0]
         max_num: int = self.num_range[1]
 
@@ -124,12 +135,22 @@ class RNGdle:
         return user_guess_str
 
     def show_result(self, output):
+        """Show the result of a guess
+
+        Params:
+            output (tuple): The verified output from the guess
+
+        Returns:
+            Nothing: There is nothing to return
+        """
         self.guesses.append(output)
 
         for idx, (color, num) in enumerate(output):
-            print(f"[{color}{num}{Colors.RESET}]", end=" | " if idx < 4 else "\n")
+            print(f"[{color}{num}{Colors.RESET}]", end="|" if idx < 4 else "\n")
 
     def print_final_results(self):
+        """Print the final results of the game
+        """
         if self.number in self.guesses:
             for idx, num in enumerate(str(self.number)):
                 print(f"{Colors.GREEN}▆{Colors.RESET}", end=f"{" " if idx < 4 else "\n"}")
@@ -142,15 +163,30 @@ class RNGdle:
 
 if __name__ == "__main__":
     def usage():
-        print()
+        print("Usage: rngdle [OPTION]...")
 
     def help_menu():
-        print("""
-""")
+        usage()
+        print("""Play a game of RNG Wordle and guess the number if you can.
+
+  -m, --min=NUMBER      set the minimum number allowed in the RNG
+  -M, --max=NUMBER      set the maximum number allowed in the RNG
+  -L, --limit=NUMBER    set a custom number of attempts per game
+
+      --help     display this help and exit
+      --version  output version information and exit
+
+Report bugs to: <https://github.com/RileyMeta/rngdle/pulls/>
+GNU Hello home page: <https://github.com/RileyMeta/rngdle/>""")
 
     def version_menu():
-        print("""
-""")
+        print("""rngdle (RNG Wordle) 1.0.0
+Copyright (C) 2026 Riley Ava.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by Riley Ava.""")
 
     def main():
         argv: list = sys.argv[1:]
