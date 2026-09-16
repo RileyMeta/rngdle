@@ -36,9 +36,10 @@ class Colors:
 
 class RNGdle:
     def __init__(self):
-        self.num_range : int  = (10_000, 100_000)
-        self.number    : int  = randrange(self.num_range[0], self.num_range[1])
-        self.layout    : list = list(str(self.number))
+        self.num_range : int  = (0, 100_000)
+        random_number  : int  = randrange(self.num_range[0], self.num_range[1])
+        self.number    : str  = self._left_pad(str(random_number), "0")
+        self.layout    : list = list(self.number)
         self.fail_limit: int  = 5
         self.guesses   : list = []
 
@@ -71,6 +72,19 @@ class RNGdle:
                 break
 
         self.print_final_results()
+
+    def _left_pad(self, string: str, char: str, limit: int = 5) -> str:
+        """Pad the left side of the string with a character
+
+        Params:
+            string (str): The string to pad
+            char   (str): The char to pad with
+
+        Returns:
+            The char padded string
+        """
+        padding: int = limit - len(string)
+        return str(char) * padding + string
 
     def accept_input(self) -> int:
         min_num: int = self.num_range[0]
