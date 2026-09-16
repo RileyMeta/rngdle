@@ -10,7 +10,7 @@ Guess a random number with wordle-style hints.
 
 Author: Riley Ava
 Created: 12/09/2026
-Last Modified: 15/09/2026
+Last Modified: 16/09/2026
 Version: 1.0.0
 License: MPL 2.0
 Repository: https://github.com/RileyMeta/rngdle
@@ -31,17 +31,18 @@ class Colors:
     """Colors for text"""
     RESET : str = "\033[0m"
     GREY  : str = "\033[2m"
+    RED   : str = "\033[31m"
     GREEN : str = "\033[32m"
     YELLOW: str = "\033[33m"
 
 class RNGdle:
-    def __init__(self):
-        self.num_range : int  = (0, 100_000)
-        random_number  : int  = randrange(self.num_range[0], self.num_range[1])
-        self.number    : str  = self._left_pad(str(random_number), "0")
-        self.layout    : list = list(self.number)
-        self.fail_limit: int  = 5
-        self.guesses   : list = []
+    def __init__(self, num_range: tuple = None, limit: int = None):
+        self.num_range : tuple  = num_range
+        self.fail_limit: int    = limit
+        random_number  : int    = randrange(self.num_range[0], self.num_range[1])
+        self.number    : str    = self._left_pad(str(random_number), "0")
+        self.layout    : list   = list(self.number)
+        self.guesses   : list   = []
 
         while True:
             user_guess = self.accept_input()
@@ -140,4 +141,66 @@ class RNGdle:
                     print(f"{color}▆{Colors.RESET}", end=f"{" " if idx < 4 else "\n"}")
 
 if __name__ == "__main__":
-    RNGdle()
+    def usage():
+        print()
+
+    def help_menu():
+        print("""
+""")
+
+    def version_menu():
+        print("""
+""")
+
+    def main():
+        argv: list = sys.argv[1:]
+        argc: int  = len(argv)
+        minimum: int = 0
+        maximum: int = 100_000
+        limit:   int = 5
+
+        for idx, arg in enumerate(argv):
+            next_arg: str = None
+
+            if idx < argc - 1:
+                next_arg = argv[idx + 1]
+
+            if arg.startswith("-") or arg.startswith("--"):
+                cur_arg = arg.replace("-", "", 2)
+
+                match cur_arg:
+                    case "help":
+                        help_menu()
+                        sys.exit(0)
+                    case "version"|"V":
+                        version_menu()
+                        sys.exit(0)
+                    case "min"|"m":
+                        if not next_arg:
+                            print("'min' requires an argument.")
+                            sys.exit(1)
+                        if not next_arg.isdigit():
+                            print("'min' must be a number.")
+                            sys.exit(1)
+                        minimum = int(next_arg)
+                    case "max"|"M":
+                        if not next_arg:
+                            print("'max' requires an argument.")
+                            sys.exit(1)
+                        if not next_arg.isdigit():
+                            print("'max' must be a number.")
+                            sys.exit(1)
+                        maximum = int(next_arg)
+                    case "limit"|"L":
+                        if not next_arg:
+                            print("'limit' requires an argument.")
+                            sys.exit(1)
+                        if not next_arg.isdigit():
+                            print("'limit' must be a number.")
+                            sys.exit(1)
+                        limit = int(next_arg)
+
+        num_range = (minimum, maximum)
+        RNGdle(num_range=num_range, limit=limit)
+
+    main()
